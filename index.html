@@ -1,374 +1,91 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#080b12">
-<title>VoidVault V5</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoidVault // Live Camera</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- LOCK -->
-<div id="lockScreen">
-  <div class="lock-card glass">
-    <div class="brand-mark">◈</div>
-    <div class="eyebrow">VOIDVAULT // V5</div>
-    <h1>ACCESS REQUIRED</h1>
-    <p>Enter your six digit access code.</p>
+  <main class="camera-app">
 
-    <input
-      id="pinInput"
-      type="password"
-      inputmode="numeric"
-      maxlength="6"
-      placeholder="••••••"
-      autocomplete="off"
-    >
-
-    <button id="unlockButton">
-      <span>UNLOCK</span>
-      <b>→</b>
-    </button>
-
-    <div id="pinMessage"></div>
-  </div>
-</div>
-
-
-<!-- SPLASH -->
-<div id="splash">
-  <div class="scanlines"></div>
-  <div class="splash-grid"></div>
-  <div class="orb orb-one"></div>
-  <div class="orb orb-two"></div>
-
-  <div class="splash-content">
-    <div class="splash-symbol">◈</div>
-    <div class="splash-title">VOID<span>VAULT</span></div>
-    <div class="splash-line"></div>
-    <p>PRIVATE DIGITAL WORKSPACE</p>
-
-    <div class="loading">
-      <div></div>
-    </div>
-
-    <small>SYSTEM INITIALIZING...</small>
-  </div>
-</div>
-
-
-<!-- APP -->
-<div id="app" class="hidden">
-
-<header class="topbar">
-  <div>
-    <span class="eyebrow">VOIDVAULT // V5</span>
-    <h1>Good evening.</h1>
-    <p id="dateText"></p>
-  </div>
-
-  <button id="themeButton" class="round-button">☾</button>
-</header>
-
-
-<!-- HERO -->
-<section class="hero glass">
-  <div class="hero-glow"></div>
-
-  <div class="hero-content">
-    <span class="eyebrow">SYSTEM STATUS</span>
-
-    <h2>
-      Everything you need.<br>
-      <span>One place.</span>
-    </h2>
-
-    <p>Your private workspace is ready.</p>
-
-    <button class="hero-button" data-tool="vault">
-      Open Vault →
-    </button>
-  </div>
-
-  <div class="hero-orbit">
-    <div class="orbit-ring"></div>
-    <div class="orbit-core">◈</div>
-  </div>
-</section>
-
-
-<!-- SEARCH -->
-<div class="search glass">
-  <span>⌕</span>
-
-  <input
-    id="globalSearch"
-    placeholder="Search tools..."
-    autocomplete="off"
-  >
-
-  <kbd>⌘ K</kbd>
-</div>
-
-
-<!-- STATS -->
-<section class="stats">
-
-  <div class="stat glass">
-    <span>VAULT</span>
-    <strong id="vaultCount">0</strong>
-    <small>items</small>
-  </div>
-
-  <div class="stat glass">
-    <span>NOTES</span>
-    <strong id="noteCount">0</strong>
-    <small>saved</small>
-  </div>
-
-  <div class="stat glass">
-    <span>TASKS</span>
-    <strong id="taskCount">0</strong>
-    <small>active</small>
-  </div>
-
-</section>
-
-
-<!-- QUICK ACTIONS -->
-<section>
-
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">QUICK ACCESS</span>
-      <h2>Launch something</h2>
-    </div>
-  </div>
-
-  <div class="modern-grid">
-
-    <button class="modern-card purple" data-tool="calculator">
-      <div class="card-icon">⌗</div>
+    <header class="topbar">
       <div>
-        <b>Calculator</b>
-        <small>Fast calculations</small>
+        <span class="eyebrow">VOIDVAULT // CAMERA</span>
+        <h1>Live Camera</h1>
+        <p>Private camera workspace</p>
       </div>
-      <span>↗</span>
-    </button>
+    </header>
 
-    <button class="modern-card cyan" data-tool="notes">
-      <div class="card-icon">✎</div>
-      <div>
-        <b>Quick Notes</b>
-        <small>Capture ideas</small>
+    <section class="camera-card">
+
+      <div class="camera-frame">
+        <video id="camera" autoplay playsinline muted></video>
+
+        <div id="cameraPlaceholder" class="placeholder">
+          <div class="camera-icon">◉</div>
+          <h2>Camera Ready</h2>
+          <p>Tekan tombol Start Camera untuk memulai.</p>
+        </div>
+
+        <div class="camera-status">
+          <span id="statusDot"></span>
+          <span id="statusText">OFFLINE</span>
+        </div>
       </div>
-      <span>↗</span>
-    </button>
 
-    <button class="modern-card green" data-tool="tasks">
-      <div class="card-icon">✓</div>
-      <div>
-        <b>Tasks</b>
-        <small>Stay organized</small>
+      <div class="controls">
+
+        <button id="startButton" class="primary">
+          Start Camera
+        </button>
+
+        <button id="captureButton" disabled>
+          Capture
+        </button>
+
+        <button id="switchButton" disabled>
+          Switch Camera
+        </button>
+
+        <button id="stopButton" disabled>
+          Stop
+        </button>
+
       </div>
-      <span>↗</span>
-    </button>
 
-    <button class="modern-card pink" data-tool="quiz">
-      <div class="card-icon">?</div>
-      <div>
-        <b>IQ Quiz</b>
-        <small>Challenge yourself</small>
+    </section>
+
+    <section id="previewSection" class="preview-card hidden">
+
+      <div class="section-title">
+        <span class="eyebrow">CAPTURED IMAGE</span>
+        <h2>Preview</h2>
       </div>
-      <span>↗</span>
-    </button>
 
-  </div>
+      <canvas id="canvas"></canvas>
 
-</section>
+      <div class="preview-buttons">
 
+        <button id="retakeButton">
+          Retake
+        </button>
 
-<!-- TOOLS -->
-<section>
+        <a id="downloadButton" class="primary download-button">
+          Save Photo
+        </a>
 
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">TOOLS</span>
-      <h2>Utilities</h2>
-    </div>
-  </div>
+      </div>
 
-  <div class="utility-grid">
+    </section>
 
-    <button data-tool="camera">
-      <span>📷</span>
-      Live Camera
-    </button>
+    <p id="message"></p>
 
-    <button data-tool="photo">
-      <span>▧</span>
-      HD Photo
-    </button>
+  </main>
 
-    <button data-tool="vault">
-      <span>◇</span>
-      Vault
-    </button>
-
-    <button data-tool="settings">
-      <span>⚙</span>
-      Settings
-    </button>
-
-    <button id="lockNow">
-      <span>⌑</span>
-      Lock
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- RECENT -->
-<section>
-
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">ACTIVITY</span>
-      <h2>Recent</h2>
-    </div>
-
-    <button id="clearActivity">Clear</button>
-  </div>
-
-  <div id="activityList"></div>
-
-</section>
-
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav glass">
-
-  <button class="active">
-    <span>⌂</span>
-    Home
-  </button>
-
-  <button data-tool="vault">
-    <span>◇</span>
-    Vault
-  </button>
-
-  <button data-tool="notes">
-    <span>✎</span>
-    Notes
-  </button>
-
-  <button data-tool="settings">
-    <span>⚙</span>
-    Settings
-  </button>
-
-</nav>
-
-</div>
-
-
-<!-- MODAL -->
-<div id="modal" class="modal hidden">
-
-  <div class="modal-box glass">
-
-    <button id="closeModal" class="close">×</button>
-
-    <div id="modalContent"></div>
-
-  </div>
-
-</div>
-
-<div id="toast"></div>
-
-
-<script>
-
-const VOIDVAULT_PIN = "552255";
-
-const lockScreen = document.getElementById("lockScreen");
-const pinInput = document.getElementById("pinInput");
-const unlockButton = document.getElementById("unlockButton");
-
-unlockButton.onclick = unlock;
-
-pinInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") unlock();
-});
-
-function unlock() {
-
-  const message = document.getElementById("pinMessage");
-
-  if (pinInput.value === VOIDVAULT_PIN) {
-
-    lockScreen.style.display = "none";
-
-    sessionStorage.setItem(
-      "voidvault_unlocked",
-      "yes"
-    );
-
-    showSplash();
-
-  } else {
-
-    message.textContent = "ACCESS DENIED";
-    message.className = "error";
-
-    pinInput.value = "";
-    pinInput.focus();
-  }
-}
-
-
-function showSplash() {
-
-  const splash = document.getElementById("splash");
-
-  splash.classList.add("show");
-
-  setTimeout(() => {
-
-    splash.classList.add("exit");
-
-    setTimeout(() => {
-
-      splash.style.display = "none";
-
-      document
-        .getElementById("app")
-        .classList.remove("hidden");
-
-    }, 700);
-
-  }, 1200);
-}
-
-
-if (
-  sessionStorage.getItem("voidvault_unlocked") === "yes"
-) {
-
-  lockScreen.style.display = "none";
-
-  showSplash();
-}
-
-</script>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
