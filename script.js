@@ -474,18 +474,25 @@ function vault() {
     <h2>🔐 Vault</h2>
 
     <p style="color:var(--muted)">
-      Local browser vault. File names are stored here;
-      the original files remain on your device.
+      Private items stored locally in this browser.
     </p>
 
     <input
-      id="vaultFile"
-      type="file"
+      id="vaultTitle"
       class="form-input"
+      placeholder="Item title"
+      autocomplete="off"
     >
 
+    <textarea
+      id="vaultSecret"
+      class="form-textarea"
+      placeholder="Write your private data..."
+      autocomplete="off"
+    ></textarea>
+
     <button id="addVault" class="primary">
-      Add to Vault
+      + Add to Vault
     </button>
 
     <div id="vaultList" style="margin-top:18px"></div>
@@ -495,10 +502,11 @@ function vault() {
 
   $("addVault").onclick = () => {
 
-    const file = $("vaultFile").files[0];
+    const title = $("vaultTitle").value.trim();
+    const secret = $("vaultSecret").value.trim();
 
-    if (!file) {
-      toast("Pilih file dulu.");
+    if (!title || !secret) {
+      toast("Isi judul dan data dulu.");
       return;
     }
 
@@ -506,19 +514,22 @@ function vault() {
 
     vaultData.unshift({
       id: Date.now(),
-      name: file.name,
-      size: file.size,
-      type: file.type
+      title,
+      secret,
+      created: new Date().toLocaleString("id-ID")
     });
 
     save(STORAGE.vault, vaultData);
 
+    $("vaultTitle").value = "";
+    $("vaultSecret").value = "";
+
     renderVault();
     updateStats();
 
-    addActivity(`Added ${file.name} to Vault`);
+    addActivity(`Added "${title}" to Vault`);
 
-    toast("File added");
+    toast("Vault item saved");
   };
 }
 
@@ -532,32 +543,72 @@ function renderVault() {
   const vaultData = load(STORAGE.vault);
 
   if (!vaultData.length) {
-    box.innerHTML =
-      `<div class="empty">Vault is empty.</div>`;
+
+    box.innerHTML = `
+      <div class="empty">
+        🔒 Vault is empty.
+      </div>
+    `;
+
     return;
   }
 
-  box.innerHTML = vaultData.map(file => `
+  box.innerHTML = vaultData.map(item => `
 
     <div class="activity">
 
-      <b>🔒 ${escapeHTML(file.name)}</b>
+      <b>
+        🔐 ${escapeHTML(item.title)}
+      </b>
 
       <small>
-        ${escapeHTML(file.type || "Unknown")}
-        · ${formatBytes(file.size)}
+        ${escapeHTML(item.created || "")}
       </small>
 
-      <button
+      <div
+        id="secret-${item.id}"
         style="
-          margin-top:8px;
-          background:transparent;
-          color:var(--danger)
+          margin-top:10px;
+          padding:10px;
+          border-radius:10px;
+          background:rgba(255,255,255,.05);
+          word-break:break-word;
+          display:none;
         "
-        onclick="deleteVault(${file.id})"
       >
-        Remove
-      </button>
+        ${escapeHTML(item.secret)}
+      </div>
+
+      <div style="
+        display:flex;
+        gap:8px;
+        margin-top:10px;
+        flex-wrap:wrap;
+      ">
+
+        <button
+          class="tool-row"
+          onclick="toggleVaultSecret(${item.id})"
+        >
+          👁 Show
+        </button>
+
+        <button
+          class="tool-row"
+          onclick="editVault(${item.id})"
+        >
+          ✏ Edit
+        </button>
+
+        <button
+          class="tool-row"
+          style="color:var(--danger)"
+          onclick="deleteVault(${item.id})"
+        >
+          🗑 Delete
+        </button>
+
+      </div>
 
     </div>
 
@@ -565,34 +616,115 @@ function renderVault() {
 }
 
 
+function toggleVaultSecret(id) {
+
+  const box = $(`secret-${id}`);
+
+  if (!box) return;
+
+  const hidden = box.style.display === "none";
+
+  box.style.display = hidden ? "block" : "none";
+
+  const button = box
+    .parentElement
+    .querySelector(".tool-row");
+
+  if (button) {
+    button.textContent = hidden
+      ? "🙈 Hide"
+      : "👁 Show";
+  }
+}
+
+
+function editVault(id) {
+
+  const vaultData = load(STORAGE.vault);
+
+  const item =
+    vaultData.find(v => v.id === id);
+
+  if (!item) return;
+
+  openModal(`
+
+    <h2>✏ Edit Vault</h2>
+
+    <input
+      id="editVaultTitle"
+      class="form-input"
+      value="${escapeHTML(item.title)}"
+      autocomplete="off"
+    >
+
+    <textarea
+      id="editVaultSecret"
+      class="form-textarea"
+      autocomplete="off"
+    >${escapeHTML(item.secret)}</textarea>
+
+    <button
+      id="saveVaultEdit"
+      class="primary"
+    >
+      Save Changes
+    </button>
+
+  `);
+
+  $("saveVaultEdit").onclick = () => {
+
+    const title =
+      $("editVaultTitle").value.trim();
+
+    const secret =
+      $("editVaultSecret").value.trim();
+
+    if (!title || !secret) {
+      toast("Data tidak boleh kosong.");
+      return;
+    }
+
+    item.title = title;
+    item.secret = secret;
+
+    save(STORAGE.vault, vaultData);
+
+    addActivity(`Edited "${title}" in Vault`);
+
+    toast("Vault updated");
+
+    vault();
+  };
+}
+
+
 function deleteVault(id) {
 
-  const vaultData =
-    load(STORAGE.vault).filter(f => f.id !== id);
+  const vaultData = load(STORAGE.vault);
 
-  save(STORAGE.vault, vaultData);
+  const item =
+    vaultData.find(v => v.id === id);
+
+  if (!item) return;
+
+  if (!confirm(`Hapus "${item.title}" dari Vault?`)) {
+    return;
+  }
+
+  const newData =
+    vaultData.filter(v => v.id !== id);
+
+  save(STORAGE.vault, newData);
 
   renderVault();
   updateStats();
 
-  toast("Removed from Vault");
+  addActivity(`Removed "${item.title}" from Vault`);
+
+  toast("Vault item deleted");
 }
-
-
-function formatBytes(bytes) {
-
-  if (!bytes) return "0 B";
-
-  const units = ["B","KB","MB","GB"];
-
-  const i =
-    Math.floor(Math.log(bytes) / Math.log(1024));
-
-  return (
-    bytes / Math.pow(1024, i)
-  ).toFixed(1) + " " + units[i];
-}
-
 
 /* =========================
    IQ QUIZ
