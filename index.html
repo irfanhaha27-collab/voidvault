@@ -3,21 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>VoidVault V4</title>
+<meta name="theme-color" content="#080b12">
+<title>VoidVault V5</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- ================= LOCK ================= -->
-
+<!-- LOCK -->
 <div id="lockScreen">
   <div class="lock-card glass">
-
     <div class="brand-mark">◈</div>
-
-    <div class="eyebrow">VOIDVAULT // V4</div>
-
+    <div class="eyebrow">VOIDVAULT // V5</div>
     <h1>ACCESS REQUIRED</h1>
     <p>Enter your six digit access code.</p>
 
@@ -36,34 +33,21 @@
     </button>
 
     <div id="pinMessage"></div>
-
   </div>
 </div>
 
 
-<!-- ================= SPLASH ================= -->
-
+<!-- SPLASH -->
 <div id="splash">
-
   <div class="scanlines"></div>
-
   <div class="splash-grid"></div>
-
   <div class="orb orb-one"></div>
   <div class="orb orb-two"></div>
 
   <div class="splash-content">
-
-    <div class="splash-symbol">
-      ◈
-    </div>
-
-    <div class="splash-title">
-      VOID<span>VAULT</span>
-    </div>
-
+    <div class="splash-symbol">◈</div>
+    <div class="splash-title">VOID<span>VAULT</span></div>
     <div class="splash-line"></div>
-
     <p>PRIVATE DIGITAL WORKSPACE</p>
 
     <div class="loading">
@@ -71,84 +55,65 @@
     </div>
 
     <small>SYSTEM INITIALIZING...</small>
-
   </div>
-
 </div>
 
 
-<!-- ================= APP ================= -->
-
+<!-- APP -->
 <div id="app" class="hidden">
 
 <header class="topbar">
-
   <div>
-    <span class="eyebrow">VOIDVAULT // V4</span>
+    <span class="eyebrow">VOIDVAULT // V5</span>
     <h1>Good evening.</h1>
     <p id="dateText"></p>
   </div>
 
-  <button id="themeButton" class="round-button">
-    ☾
-  </button>
-
+  <button id="themeButton" class="round-button">☾</button>
 </header>
 
 
 <!-- HERO -->
-
 <section class="hero glass">
-
   <div class="hero-glow"></div>
 
   <div class="hero-content">
-
     <span class="eyebrow">SYSTEM STATUS</span>
 
-    <h2>Everything you need.<br>
+    <h2>
+      Everything you need.<br>
       <span>One place.</span>
     </h2>
 
-    <p>
-      Your private workspace is ready.
-    </p>
+    <p>Your private workspace is ready.</p>
 
-    <button
-      class="hero-button"
-      data-tool="vault"
-    >
+    <button class="hero-button" data-tool="vault">
       Open Vault →
     </button>
-
   </div>
 
   <div class="hero-orbit">
     <div class="orbit-ring"></div>
     <div class="orbit-core">◈</div>
   </div>
-
 </section>
 
 
 <!-- SEARCH -->
-
 <div class="search glass">
-
   <span>⌕</span>
 
   <input
     id="globalSearch"
     placeholder="Search tools..."
+    autocomplete="off"
   >
 
   <kbd>⌘ K</kbd>
-
 </div>
 
 
 <!-- STATS -->
-
 <section class="stats">
 
   <div class="stat glass">
@@ -173,7 +138,6 @@
 
 
 <!-- QUICK ACTIONS -->
-
 <section>
 
   <div class="section-head">
@@ -227,19 +191,21 @@
 
 
 <!-- TOOLS -->
-
 <section>
 
   <div class="section-head">
-
     <div>
       <span class="eyebrow">TOOLS</span>
       <h2>Utilities</h2>
     </div>
-
   </div>
 
   <div class="utility-grid">
+
+    <button data-tool="camera">
+      <span>📷</span>
+      Live Camera
+    </button>
 
     <button data-tool="photo">
       <span>▧</span>
@@ -267,20 +233,15 @@
 
 
 <!-- RECENT -->
-
 <section>
 
   <div class="section-head">
-
     <div>
       <span class="eyebrow">ACTIVITY</span>
       <h2>Recent</h2>
     </div>
 
-    <button id="clearActivity">
-      Clear
-    </button>
-
+    <button id="clearActivity">Clear</button>
   </div>
 
   <div id="activityList"></div>
@@ -289,7 +250,6 @@
 
 
 <!-- BOTTOM NAV -->
-
 <nav class="bottom-nav glass">
 
   <button class="active">
@@ -318,14 +278,11 @@
 
 
 <!-- MODAL -->
-
 <div id="modal" class="modal hidden">
 
   <div class="modal-box glass">
 
-    <button id="closeModal" class="close">
-      ×
-    </button>
+    <button id="closeModal" class="close">×</button>
 
     <div id="modalContent"></div>
 
@@ -333,13 +290,10 @@
 
 </div>
 
-
 <div id="toast"></div>
 
 
 <script>
-
-/* ================= PIN ================= */
 
 const VOIDVAULT_PIN = "552255";
 
@@ -350,20 +304,14 @@ const unlockButton = document.getElementById("unlockButton");
 unlockButton.onclick = unlock;
 
 pinInput.addEventListener("keydown", e => {
-
-  if(e.key === "Enter"){
-    unlock();
-  }
-
+  if (e.key === "Enter") unlock();
 });
 
+function unlock() {
 
-function unlock(){
+  const message = document.getElementById("pinMessage");
 
-  const message =
-    document.getElementById("pinMessage");
-
-  if(pinInput.value === VOIDVAULT_PIN){
+  if (pinInput.value === VOIDVAULT_PIN) {
 
     lockScreen.style.display = "none";
 
@@ -374,28 +322,20 @@ function unlock(){
 
     showSplash();
 
-  }else{
+  } else {
 
-    message.textContent =
-      "ACCESS DENIED";
-
+    message.textContent = "ACCESS DENIED";
     message.className = "error";
 
     pinInput.value = "";
-
     pinInput.focus();
-
   }
-
 }
 
 
-/* ================= SPLASH ================= */
+function showSplash() {
 
-function showSplash(){
-
-  const splash =
-    document.getElementById("splash");
+  const splash = document.getElementById("splash");
 
   splash.classList.add("show");
 
@@ -411,25 +351,19 @@ function showSplash(){
         .getElementById("app")
         .classList.remove("hidden");
 
-    },700);
+    }, 700);
 
-  },2200);
-
+  }, 1200);
 }
 
 
-/* ================= SESSION ================= */
-
-if(
-  sessionStorage.getItem(
-    "voidvault_unlocked"
-  ) === "yes"
-){
+if (
+  sessionStorage.getItem("voidvault_unlocked") === "yes"
+) {
 
   lockScreen.style.display = "none";
 
   showSplash();
-
 }
 
 </script>

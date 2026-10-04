@@ -1,33 +1,55 @@
 /* =========================
-   VOIDVAULT V3
+   VOIDVAULT V5
    Main Application
 ========================= */
 
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 const STORAGE = {
-  notes: "vv3_notes",
-  tasks: "vv3_tasks",
-  vault: "vv3_vault",
-  activity: "vv3_activity",
-  theme: "vv3_theme"
+  notes: "vv5_notes",
+  tasks: "vv5_tasks",
+  vault: "vv5_vault",
+  activity: "vv5_activity",
+  theme: "vv5_theme"
 };
 
 
 /* =========================
-   STORAGE HELPERS
+   STORAGE
 ========================= */
 
 function load(key, fallback = []) {
+
   try {
-    return JSON.parse(localStorage.getItem(key)) || fallback;
+    return JSON.parse(
+      localStorage.getItem(key)
+    ) || fallback;
+
   } catch {
     return fallback;
   }
 }
 
 function save(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(
+    key,
+    JSON.stringify(value)
+  );
+}
+
+
+/* =========================
+   SAFE HTML
+========================= */
+
+function escapeHTML(text) {
+
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 
@@ -38,6 +60,7 @@ function save(key, value) {
 let toastTimer;
 
 function toast(message) {
+
   const box = $("toast");
 
   box.textContent = message;
@@ -57,25 +80,36 @@ function toast(message) {
 
 function addActivity(text) {
 
-  const activity = load(STORAGE.activity);
+  const activity =
+    load(STORAGE.activity);
 
   activity.unshift({
     text,
     time: new Date().toLocaleString("id-ID")
   });
 
-  save(STORAGE.activity, activity.slice(0, 20));
+  save(
+    STORAGE.activity,
+    activity.slice(0, 20)
+  );
 
   renderActivity();
 }
 
 function renderActivity() {
 
-  const activity = load(STORAGE.activity);
   const box = $("activityList");
 
+  if (!box) return;
+
+  const activity =
+    load(STORAGE.activity);
+
   if (!activity.length) {
-    box.innerHTML = `<div class="empty">No activity yet.</div>`;
+
+    box.innerHTML =
+      `<div class="empty">No activity yet.</div>`;
+
     return;
   }
 
@@ -88,24 +122,14 @@ function renderActivity() {
 }
 
 $("clearActivity").onclick = () => {
-  localStorage.removeItem(STORAGE.activity);
+
+  localStorage.removeItem(
+    STORAGE.activity
+  );
+
   renderActivity();
   toast("Activity cleared");
 };
-
-
-/* =========================
-   SAFE TEXT
-========================= */
-
-function escapeHTML(text) {
-  return String(text)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
 
 
 /* =========================
@@ -115,12 +139,15 @@ function escapeHTML(text) {
 function updateDate() {
 
   $("dateText").textContent =
-    new Date().toLocaleDateString("id-ID", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    });
+    new Date().toLocaleDateString(
+      "id-ID",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }
+    );
 }
 
 
@@ -137,7 +164,9 @@ function updateStats() {
     load(STORAGE.notes).length;
 
   $("taskCount").textContent =
-    load(STORAGE.tasks).filter(t => !t.done).length;
+    load(STORAGE.tasks)
+      .filter(t => !t.done)
+      .length;
 }
 
 
@@ -152,16 +181,25 @@ function openModal(html) {
 }
 
 function closeModal() {
+
+  stopCamera();
+
   $("modal").classList.add("hidden");
 }
 
-$("closeModal").onclick = closeModal;
+$("closeModal").onclick =
+  closeModal;
 
-$("modal").addEventListener("click", e => {
-  if (e.target === $("modal")) {
-    closeModal();
+$("modal").addEventListener(
+  "click",
+  e => {
+
+    if (e.target === $("modal")) {
+      closeModal();
+    }
+
   }
-});
+);
 
 
 /* =========================
@@ -172,6 +210,7 @@ function calculator() {
 
   openModal(`
     <h2>🧮 Calculator</h2>
+
     <p style="color:var(--muted)">
       Basic calculator.
     </p>
@@ -192,30 +231,39 @@ function calculator() {
 
   $("calcButton").onclick = () => {
 
-    const expression = $("calcInput").value.trim();
+    const expression =
+      $("calcInput").value.trim();
 
-    /*
-      Hanya izinkan angka dan operator dasar.
-    */
+    if (
+      !/^[0-9+\-*/().%\s]+$/
+        .test(expression)
+    ) {
 
-    if (!/^[0-9+\-*/().%\s]+$/.test(expression)) {
-      $("calcResult").textContent = "Input tidak valid.";
+      $("calcResult")
+        .textContent =
+        "Input tidak valid.";
+
       return;
     }
 
     try {
 
-      const result = Function(
-        `"use strict"; return (${expression})`
-      )();
+      const result =
+        Function(
+          `"use strict"; return (${expression})`
+        )();
 
-      $("calcResult").textContent = `= ${result}`;
+      $("calcResult")
+        .textContent = `= ${result}`;
 
-      addActivity("Used Calculator");
+      addActivity(
+        "Used Calculator"
+      );
 
     } catch {
 
-      $("calcResult").textContent =
+      $("calcResult")
+        .textContent =
         "Tidak bisa dihitung.";
     }
   };
@@ -229,6 +277,7 @@ function calculator() {
 function notes() {
 
   openModal(`
+
     <h2>📝 Quick Notes</h2>
 
     <input
@@ -247,30 +296,37 @@ function notes() {
       Save Note
     </button>
 
-    <div id="notesList" style="margin-top:18px"></div>
+    <div
+      id="notesList"
+      style="margin-top:18px"
+    ></div>
   `);
 
   renderNotes();
 
   $("saveNote").onclick = () => {
 
-    const title = $("noteTitle").value.trim();
-    const text = $("noteText").value.trim();
+    const title =
+      $("noteTitle").value.trim();
+
+    const text =
+      $("noteText").value.trim();
 
     if (!text) {
       toast("Tulis catatan dulu.");
       return;
     }
 
-    const notesData = load(STORAGE.notes);
+    const data =
+      load(STORAGE.notes);
 
-    notesData.unshift({
+    data.unshift({
       id: Date.now(),
       title: title || "Untitled",
       text
     });
 
-    save(STORAGE.notes, notesData);
+    save(STORAGE.notes, data);
 
     $("noteTitle").value = "";
     $("noteText").value = "";
@@ -278,7 +334,10 @@ function notes() {
     renderNotes();
     updateStats();
 
-    addActivity("Created a note");
+    addActivity(
+      "Created a note"
+    );
+
     toast("Note saved");
   };
 }
@@ -290,35 +349,48 @@ function renderNotes() {
 
   if (!box) return;
 
-  const notesData = load(STORAGE.notes);
+  const data =
+    load(STORAGE.notes);
 
-  if (!notesData.length) {
+  if (!data.length) {
+
     box.innerHTML =
       `<div class="empty">No notes yet.</div>`;
+
     return;
   }
 
-  box.innerHTML = notesData.map(note => `
+  box.innerHTML = data.map(note => `
+
     <div class="activity">
+
       <b>${escapeHTML(note.title)}</b>
-      <small>${escapeHTML(note.text)}</small>
+
+      <small>
+        ${escapeHTML(note.text)}
+      </small>
+
       <button
-        style="margin-top:8px;background:transparent;color:var(--danger)"
+        class="tool-row"
+        style="margin-top:8px;color:var(--danger)"
         onclick="deleteNote(${note.id})"
       >
         Delete
       </button>
+
     </div>
+
   `).join("");
 }
 
 
 function deleteNote(id) {
 
-  const notesData =
-    load(STORAGE.notes).filter(n => n.id !== id);
+  const data =
+    load(STORAGE.notes)
+      .filter(n => n.id !== id);
 
-  save(STORAGE.notes, notesData);
+  save(STORAGE.notes, data);
 
   renderNotes();
   updateStats();
@@ -334,6 +406,7 @@ function deleteNote(id) {
 function tasks() {
 
   openModal(`
+
     <h2>✓ Tasks</h2>
 
     <input
@@ -346,53 +419,66 @@ function tasks() {
       Add Task
     </button>
 
-    <div id="tasksList" style="margin-top:18px"></div>
+    <div
+      id="tasksList"
+      style="margin-top:18px"
+    ></div>
   `);
 
   renderTasks();
 
   $("addTask").onclick = () => {
 
-    const input = $("taskInput");
-    const text = input.value.trim();
+    const input =
+      $("taskInput");
+
+    const text =
+      input.value.trim();
 
     if (!text) return;
 
-    const taskData = load(STORAGE.tasks);
+    const data =
+      load(STORAGE.tasks);
 
-    taskData.unshift({
+    data.unshift({
       id: Date.now(),
       text,
       done: false
     });
 
-    save(STORAGE.tasks, taskData);
+    save(STORAGE.tasks, data);
 
     input.value = "";
 
     renderTasks();
     updateStats();
 
-    addActivity("Added a task");
+    addActivity(
+      "Added a task"
+    );
   };
 }
 
 
 function renderTasks() {
 
-  const box = $("tasksList");
+  const box =
+    $("tasksList");
 
   if (!box) return;
 
-  const taskData = load(STORAGE.tasks);
+  const data =
+    load(STORAGE.tasks);
 
-  if (!taskData.length) {
+  if (!data.length) {
+
     box.innerHTML =
       `<div class="empty">No tasks yet.</div>`;
+
     return;
   }
 
-  box.innerHTML = taskData.map(task => `
+  box.innerHTML = data.map(task => `
 
     <div class="activity">
 
@@ -409,7 +495,9 @@ function renderTasks() {
         >
 
         <span style="
-          ${task.done ? "text-decoration:line-through;opacity:.5" : ""}
+          ${task.done
+            ? "text-decoration:line-through;opacity:.5"
+            : ""}
         ">
           ${escapeHTML(task.text)}
         </span>
@@ -417,9 +505,9 @@ function renderTasks() {
       </label>
 
       <button
+        class="tool-row"
         style="
           margin-top:8px;
-          background:transparent;
           color:var(--danger)
         "
         onclick="deleteTask(${task.id})"
@@ -435,15 +523,17 @@ function renderTasks() {
 
 function toggleTask(id) {
 
-  const taskData = load(STORAGE.tasks);
+  const data =
+    load(STORAGE.tasks);
 
-  const task = taskData.find(t => t.id === id);
+  const task =
+    data.find(t => t.id === id);
 
   if (task) {
     task.done = !task.done;
   }
 
-  save(STORAGE.tasks, taskData);
+  save(STORAGE.tasks, data);
 
   renderTasks();
   updateStats();
@@ -452,10 +542,11 @@ function toggleTask(id) {
 
 function deleteTask(id) {
 
-  const taskData =
-    load(STORAGE.tasks).filter(t => t.id !== id);
+  const data =
+    load(STORAGE.tasks)
+      .filter(t => t.id !== id);
 
-  save(STORAGE.tasks, taskData);
+  save(STORAGE.tasks, data);
 
   renderTasks();
   updateStats();
@@ -471,10 +562,11 @@ function deleteTask(id) {
 function vault() {
 
   openModal(`
+
     <h2>🔐 Vault</h2>
 
     <p style="color:var(--muted)">
-      Private items stored locally in this browser.
+      Private local vault.
     </p>
 
     <input
@@ -487,39 +579,50 @@ function vault() {
     <textarea
       id="vaultSecret"
       class="form-textarea"
-      placeholder="Write your private data..."
+      placeholder="Private data..."
       autocomplete="off"
     ></textarea>
 
-    <button id="addVault" class="primary">
+    <button
+      id="addVault"
+      class="primary"
+    >
       + Add to Vault
     </button>
 
-    <div id="vaultList" style="margin-top:18px"></div>
+    <div
+      id="vaultList"
+      style="margin-top:18px"
+    ></div>
   `);
 
   renderVault();
 
   $("addVault").onclick = () => {
 
-    const title = $("vaultTitle").value.trim();
-    const secret = $("vaultSecret").value.trim();
+    const title =
+      $("vaultTitle").value.trim();
+
+    const secret =
+      $("vaultSecret").value.trim();
 
     if (!title || !secret) {
-      toast("Isi judul dan data dulu.");
+      toast("Isi semua field dulu.");
       return;
     }
 
-    const vaultData = load(STORAGE.vault);
+    const data =
+      load(STORAGE.vault);
 
-    vaultData.unshift({
+    data.unshift({
       id: Date.now(),
       title,
       secret,
-      created: new Date().toLocaleString("id-ID")
+      created:
+        new Date().toLocaleString("id-ID")
     });
 
-    save(STORAGE.vault, vaultData);
+    save(STORAGE.vault, data);
 
     $("vaultTitle").value = "";
     $("vaultSecret").value = "";
@@ -527,33 +630,36 @@ function vault() {
     renderVault();
     updateStats();
 
-    addActivity(`Added "${title}" to Vault`);
+    addActivity(
+      `Added "${title}" to Vault`
+    );
 
-    toast("Vault item saved");
+    toast("Vault saved");
   };
 }
 
 
 function renderVault() {
 
-  const box = $("vaultList");
+  const box =
+    $("vaultList");
 
   if (!box) return;
 
-  const vaultData = load(STORAGE.vault);
+  const data =
+    load(STORAGE.vault);
 
-  if (!vaultData.length) {
+  if (!data.length) {
 
-    box.innerHTML = `
-      <div class="empty">
+    box.innerHTML =
+      `<div class="empty">
         🔒 Vault is empty.
-      </div>
-    `;
+      </div>`;
 
     return;
   }
 
-  box.innerHTML = vaultData.map(item => `
+  box.innerHTML = data.map(item => `
 
     <div class="activity">
 
@@ -568,12 +674,12 @@ function renderVault() {
       <div
         id="secret-${item.id}"
         style="
+          display:none;
           margin-top:10px;
           padding:10px;
           border-radius:10px;
           background:rgba(255,255,255,.05);
           word-break:break-word;
-          display:none;
         "
       >
         ${escapeHTML(item.secret)}
@@ -582,8 +688,8 @@ function renderVault() {
       <div style="
         display:flex;
         gap:8px;
-        margin-top:10px;
         flex-wrap:wrap;
+        margin-top:10px;
       ">
 
         <button
@@ -591,6 +697,13 @@ function renderVault() {
           onclick="toggleVaultSecret(${item.id})"
         >
           👁 Show
+        </button>
+
+        <button
+          class="tool-row"
+          onclick="copyVaultSecret(${item.id})"
+        >
+          📋 Copy
         </button>
 
         <button
@@ -618,32 +731,61 @@ function renderVault() {
 
 function toggleVaultSecret(id) {
 
-  const box = $(`secret-${id}`);
+  const box =
+    $(`secret-${id}`);
 
   if (!box) return;
 
-  const hidden = box.style.display === "none";
+  const hidden =
+    box.style.display === "none";
 
-  box.style.display = hidden ? "block" : "none";
+  box.style.display =
+    hidden ? "block" : "none";
 
-  const button = box
-    .parentElement
-    .querySelector(".tool-row");
+  const button =
+    box.parentElement
+      .querySelector(".tool-row");
 
   if (button) {
-    button.textContent = hidden
-      ? "🙈 Hide"
-      : "👁 Show";
+
+    button.textContent =
+      hidden
+        ? "🙈 Hide"
+        : "👁 Show";
+  }
+}
+
+
+async function copyVaultSecret(id) {
+
+  const item =
+    load(STORAGE.vault)
+      .find(v => v.id === id);
+
+  if (!item) return;
+
+  try {
+
+    await navigator.clipboard.writeText(
+      item.secret
+    );
+
+    toast("Copied to clipboard");
+
+  } catch {
+
+    toast("Clipboard tidak tersedia");
   }
 }
 
 
 function editVault(id) {
 
-  const vaultData = load(STORAGE.vault);
+  const data =
+    load(STORAGE.vault);
 
   const item =
-    vaultData.find(v => v.id === id);
+    data.find(v => v.id === id);
 
   if (!item) return;
 
@@ -655,13 +797,11 @@ function editVault(id) {
       id="editVaultTitle"
       class="form-input"
       value="${escapeHTML(item.title)}"
-      autocomplete="off"
     >
 
     <textarea
       id="editVaultSecret"
       class="form-textarea"
-      autocomplete="off"
     >${escapeHTML(item.secret)}</textarea>
 
     <button
@@ -670,7 +810,6 @@ function editVault(id) {
     >
       Save Changes
     </button>
-
   `);
 
   $("saveVaultEdit").onclick = () => {
@@ -689,9 +828,11 @@ function editVault(id) {
     item.title = title;
     item.secret = secret;
 
-    save(STORAGE.vault, vaultData);
+    save(STORAGE.vault, data);
 
-    addActivity(`Edited "${title}" in Vault`);
+    addActivity(
+      `Edited "${title}" in Vault`
+    );
 
     toast("Vault updated");
 
@@ -702,32 +843,404 @@ function editVault(id) {
 
 function deleteVault(id) {
 
-  const vaultData = load(STORAGE.vault);
+  const data =
+    load(STORAGE.vault);
 
   const item =
-    vaultData.find(v => v.id === id);
+    data.find(v => v.id === id);
 
   if (!item) return;
 
-  if (!confirm(`Hapus "${item.title}" dari Vault?`)) {
-    return;
-  }
+  if (
+    !confirm(
+      `Hapus "${item.title}" dari Vault?`
+    )
+  ) return;
 
-  const newData =
-    vaultData.filter(v => v.id !== id);
-
-  save(STORAGE.vault, newData);
+  save(
+    STORAGE.vault,
+    data.filter(v => v.id !== id)
+  );
 
   renderVault();
   updateStats();
 
-  addActivity(`Removed "${item.title}" from Vault`);
+  addActivity(
+    `Removed "${item.title}" from Vault`
+  );
 
   toast("Vault item deleted");
 }
 
+
 /* =========================
-   IQ QUIZ
+   LIVE CAMERA
+========================= */
+
+let cameraStream = null;
+let cameraFacing = "environment";
+
+
+async function cameraTool() {
+
+  openModal(`
+
+    <h2>📷 Live Camera</h2>
+
+    <p style="color:var(--muted)">
+      Camera preview berjalan langsung di browser.
+    </p>
+
+    <div class="camera-wrap">
+      <video
+        id="cameraVideo"
+        autoplay
+        playsinline
+        muted
+      ></video>
+    </div>
+
+    <div class="camera-controls">
+
+      <button
+        id="switchCamera"
+      >
+        🔄 Switch Camera
+      </button>
+
+      <button
+        id="stopCameraButton"
+      >
+        ⏹ Stop
+      </button>
+
+      <button
+        id="capturePhoto"
+        class="capture"
+      >
+        📸 Capture Photo
+      </button>
+
+    </div>
+
+    <canvas
+      id="cameraCanvas"
+      class="hidden"
+    ></canvas>
+
+    <div id="cameraResult"></div>
+  `);
+
+  $("switchCamera").onclick =
+    switchCamera;
+
+  $("stopCameraButton").onclick =
+    stopCamera;
+
+  $("capturePhoto").onclick =
+    capturePhoto;
+
+  await startCamera();
+}
+
+
+async function startCamera() {
+
+  stopCamera();
+
+  if (
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ) {
+
+    toast(
+      "Browser tidak mendukung kamera."
+    );
+
+    return;
+  }
+
+  try {
+
+    cameraStream =
+      await navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            facingMode: {
+              ideal: cameraFacing
+            }
+          },
+          audio: false
+        });
+
+    const video =
+      $("cameraVideo");
+
+    if (!video) {
+      stopCamera();
+      return;
+    }
+
+    video.srcObject =
+      cameraStream;
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast(
+      "Izin kamera ditolak atau kamera tidak tersedia."
+    );
+  }
+}
+
+
+async function switchCamera() {
+
+  cameraFacing =
+    cameraFacing === "environment"
+      ? "user"
+      : "environment";
+
+  await startCamera();
+}
+
+
+function stopCamera() {
+
+  if (cameraStream) {
+
+    cameraStream
+      .getTracks()
+      .forEach(track => track.stop());
+
+    cameraStream = null;
+  }
+
+  const video =
+    $("cameraVideo");
+
+  if (video) {
+    video.srcObject = null;
+  }
+}
+
+
+function capturePhoto() {
+
+  const video =
+    $("cameraVideo");
+
+  const canvas =
+    $("cameraCanvas");
+
+  const result =
+    $("cameraResult");
+
+  if (
+    !video ||
+    !canvas ||
+    !result ||
+    !video.videoWidth
+  ) {
+
+    toast(
+      "Kamera belum siap."
+    );
+
+    return;
+  }
+
+  canvas.width =
+    video.videoWidth;
+
+  canvas.height =
+    video.videoHeight;
+
+  const ctx =
+    canvas.getContext("2d");
+
+  ctx.drawImage(
+    video,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  const image =
+    canvas.toDataURL(
+      "image/jpeg",
+      .92
+    );
+
+  result.innerHTML = `
+
+    <img src="${image}" alt="Captured photo">
+
+    <a
+      href="${image}"
+      download="voidvault-photo.jpg"
+      class="primary"
+      style="
+        display:block;
+        text-align:center;
+        text-decoration:none;
+        margin-top:12px;
+      "
+    >
+      💾 Save Photo
+    </a>
+  `;
+
+  addActivity(
+    "Captured a photo"
+  );
+
+  toast("Photo captured");
+}
+
+
+/* =========================
+   HD PHOTO
+========================= */
+
+function photoTool() {
+
+  openModal(`
+
+    <h2>🖼️ HD Photo</h2>
+
+    <p style="color:var(--muted)">
+      Simple local image upscaler.
+    </p>
+
+    <input
+      id="photoInput"
+      type="file"
+      accept="image/*"
+      class="form-input"
+    >
+
+    <select
+      id="scaleInput"
+      class="form-input"
+    >
+      <option value="2">2×</option>
+      <option value="4">4×</option>
+    </select>
+
+    <button
+      id="processPhoto"
+      class="primary"
+    >
+      Upscale
+    </button>
+
+    <div id="photoResult"></div>
+  `);
+
+  $("processPhoto").onclick = () => {
+
+    const file =
+      $("photoInput").files[0];
+
+    const scale =
+      Number(
+        $("scaleInput").value
+      );
+
+    if (!file) {
+      toast("Pilih gambar dulu.");
+      return;
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload = e => {
+
+      const image =
+        new Image();
+
+      image.onload = () => {
+
+        const canvas =
+          document.createElement(
+            "canvas"
+          );
+
+        canvas.width =
+          image.width * scale;
+
+        canvas.height =
+          image.height * scale;
+
+        const ctx =
+          canvas.getContext("2d");
+
+        ctx.imageSmoothingEnabled =
+          true;
+
+        ctx.imageSmoothingQuality =
+          "high";
+
+        ctx.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        const url =
+          canvas.toDataURL(
+            "image/jpeg",
+            .92
+          );
+
+        $("photoResult").innerHTML = `
+
+          <img
+            src="${url}"
+            style="
+              width:100%;
+              margin-top:15px;
+              border-radius:15px;
+            "
+          >
+
+          <a
+            href="${url}"
+            download="voidvault-hd.jpg"
+            class="primary"
+            style="
+              display:block;
+              text-align:center;
+              text-decoration:none;
+              margin-top:12px;
+            "
+          >
+            Save HD Photo
+          </a>
+        `;
+
+        addActivity(
+          "Upscaled an image"
+        );
+      };
+
+      image.src =
+        e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  };
+}
+
+
+/* =========================
+   QUIZ
 ========================= */
 
 const questions = [
@@ -757,7 +1270,12 @@ const questions = [
 
   {
     q: "Which one is different?",
-    answers: ["Apple","Banana","Carrot","Orange"],
+    answers: [
+      "Apple",
+      "Banana",
+      "Carrot",
+      "Orange"
+    ],
     correct: 2
   }
 
@@ -771,24 +1289,28 @@ function quiz() {
 
   function showQuestion() {
 
-    const q = questions[index];
+    const q =
+      questions[index];
 
     openModal(`
+
       <h2>🧠 IQ Quiz</h2>
 
       <p>
-        Question ${index + 1} / ${questions.length}
+        Question ${index + 1}
+        / ${questions.length}
       </p>
 
-      <h3>${escapeHTML(q.q)}</h3>
+      <h3>
+        ${escapeHTML(q.q)}
+      </h3>
 
       <div id="answers"></div>
-
-      <p id="quizScore"></p>
     `);
 
     $("answers").innerHTML =
-      q.answers.map((answer,i) => `
+      q.answers.map((answer, i) => `
+
         <button
           class="tool-row"
           style="
@@ -800,157 +1322,59 @@ function quiz() {
         >
           ${escapeHTML(answer)}
         </button>
+
       `).join("");
   }
 
 
-  window.answerQuiz = function(answer) {
+  window.answerQuiz =
+    answer => {
 
-    if (answer === questions[index].correct) {
-      score++;
-    }
+      if (
+        answer ===
+        questions[index].correct
+      ) {
+        score++;
+      }
 
-    index++;
+      index++;
 
-    if (index >= questions.length) {
+      if (
+        index >= questions.length
+      ) {
 
-      openModal(`
-        <h2>🧠 Quiz Complete</h2>
+        openModal(`
 
-        <h1>
-          ${score} / ${questions.length}
-        </h1>
+          <h2>🧠 Quiz Complete</h2>
 
-        <p style="color:var(--muted)">
-          Nice run.
-        </p>
+          <h1>
+            ${score} /
+            ${questions.length}
+          </h1>
 
-        <button
-          class="primary"
-          onclick="closeModal()"
-        >
-          Done
-        </button>
-      `);
+          <p style="color:var(--muted)">
+            Nice run.
+          </p>
 
-      addActivity(`Completed IQ Quiz: ${score}/${questions.length}`);
+          <button
+            class="primary"
+            onclick="closeModal()"
+          >
+            Done
+          </button>
+        `);
 
-    } else {
-
-      showQuestion();
-    }
-  };
-
-  showQuestion();
-}
-
-
-/* =========================
-   HD PHOTO
-========================= */
-
-function photoTool() {
-
-  openModal(`
-    <h2>🖼️ HD Photo</h2>
-
-    <p style="color:var(--muted)">
-      Simple local image upscaler.
-    </p>
-
-    <input
-      id="photoInput"
-      type="file"
-      accept="image/*"
-      class="form-input"
-    >
-
-    <select id="scaleInput" class="form-input">
-      <option value="2">2×</option>
-      <option value="4">4×</option>
-    </select>
-
-    <button id="processPhoto" class="primary">
-      Upscale
-    </button>
-
-    <div id="photoResult"></div>
-  `);
-
-  $("processPhoto").onclick = () => {
-
-    const file = $("photoInput").files[0];
-    const scale = Number($("scaleInput").value);
-
-    if (!file) {
-      toast("Pilih gambar dulu.");
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-
-      const image = new Image();
-
-      image.onload = function() {
-
-        const canvas =
-          document.createElement("canvas");
-
-        canvas.width = image.width * scale;
-        canvas.height = image.height * scale;
-
-        const ctx = canvas.getContext("2d");
-
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
-
-        ctx.drawImage(
-          image,
-          0,
-          0,
-          canvas.width,
-          canvas.height
+        addActivity(
+          `Completed IQ Quiz: ${score}/${questions.length}`
         );
 
-        const url =
-          canvas.toDataURL("image/jpeg", .92);
+      } else {
 
-        $("photoResult").innerHTML = `
-
-          <img
-            src="${url}"
-            style="
-              width:100%;
-              margin-top:15px;
-              border-radius:15px;
-            "
-          >
-
-          <a
-            href="${url}"
-            download="voidvault-hd.jpg"
-            class="primary"
-            style="
-              display:block;
-              text-align:center;
-              text-decoration:none;
-              margin-top:12px;
-            "
-          >
-            Save HD Photo
-          </a>
-        `;
-
-        addActivity("Upscaled an image");
-      };
-
-      image.src = e.target.result;
+        showQuestion();
+      }
     };
 
-    reader.readAsDataURL(file);
-  };
+  showQuestion();
 }
 
 
@@ -961,42 +1385,71 @@ function photoTool() {
 function settings() {
 
   openModal(`
+
     <h2>⚙️ Settings</h2>
 
     <p style="color:var(--muted)">
-      VoidVault V3 settings.
+      VoidVault settings.
     </p>
 
-    <button id="resetData" class="primary">
+    <button
+      id="resetData"
+      class="primary"
+    >
       Reset Local Data
     </button>
 
-    <button id="lockNow" class="primary">
+    <br><br>
+
+    <button
+      id="modalLock"
+      class="primary"
+    >
       Lock VoidVault
     </button>
   `);
 
   $("resetData").onclick = () => {
 
-    if (confirm("Hapus semua data VoidVault?")) {
+    if (
+      confirm(
+        "Hapus semua data VoidVault?"
+      )
+    ) {
 
       localStorage.clear();
 
       toast("Data reset");
 
-      setTimeout(() => {
-        location.reload();
-      }, 500);
+      setTimeout(
+        () => location.reload(),
+        500
+      );
     }
   };
 
-  $("lockNow").onclick = () => {
-
-    sessionStorage.removeItem("voidvault_unlocked");
-
-    location.reload();
-  };
+  $("modalLock").onclick =
+    lockVault;
 }
+
+
+/* =========================
+   LOCK
+========================= */
+
+function lockVault() {
+
+  stopCamera();
+
+  sessionStorage.removeItem(
+    "voidvault_unlocked"
+  );
+
+  location.reload();
+}
+
+$("lockNow").onclick =
+  lockVault;
 
 
 /* =========================
@@ -1005,14 +1458,29 @@ function settings() {
 
 function openTool(tool) {
 
-  if (tool === "calculator") calculator();
-  if (tool === "notes") notes();
-  if (tool === "tasks") tasks();
-  if (tool === "vault") vault();
-  if (tool === "quiz") quiz();
-  if (tool === "photo") photoTool();
-  if (tool === "settings") settings();
+  if (tool === "calculator")
+    calculator();
 
+  if (tool === "notes")
+    notes();
+
+  if (tool === "tasks")
+    tasks();
+
+  if (tool === "vault")
+    vault();
+
+  if (tool === "quiz")
+    quiz();
+
+  if (tool === "photo")
+    photoTool();
+
+  if (tool === "camera")
+    cameraTool();
+
+  if (tool === "settings")
+    settings();
 }
 
 
@@ -1020,17 +1488,22 @@ function openTool(tool) {
    TOOL BUTTONS
 ========================= */
 
-document.querySelectorAll("[data-tool]").forEach(button => {
+document
+  .querySelectorAll("[data-tool]")
+  .forEach(button => {
 
-  button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-    const tool = button.dataset.tool;
+        openTool(
+          button.dataset.tool
+        );
 
-    openTool(tool);
+      }
+    );
 
   });
-
-});
 
 
 /* =========================
@@ -1040,28 +1513,39 @@ document.querySelectorAll("[data-tool]").forEach(button => {
 function loadTheme() {
 
   const theme =
-    localStorage.getItem(STORAGE.theme);
+    localStorage.getItem(
+      STORAGE.theme
+    );
 
   if (theme === "light") {
-    document.body.classList.add("light");
-    $("themeButton").textContent = "☀";
+
+    document.body
+      .classList.add("light");
+
+    $("themeButton")
+      .textContent = "☀";
   }
 }
 
 $("themeButton").onclick = () => {
 
-  document.body.classList.toggle("light");
+  document.body
+    .classList.toggle("light");
 
   const light =
-    document.body.classList.contains("light");
+    document.body
+      .classList.contains("light");
 
   localStorage.setItem(
     STORAGE.theme,
-    light ? "light" : "dark"
+    light
+      ? "light"
+      : "dark"
   );
 
-  $("themeButton").textContent =
-    light ? "☀" : "☾";
+  $("themeButton")
+    .textContent =
+      light ? "☀" : "☾";
 };
 
 
@@ -1069,20 +1553,31 @@ $("themeButton").onclick = () => {
    SEARCH
 ========================= */
 
-$("globalSearch").addEventListener("input", function() {
+$("globalSearch")
+  .addEventListener(
+    "input",
+    function() {
 
-  const query =
-    this.value.toLowerCase().trim();
+      const query =
+        this.value
+          .toLowerCase()
+          .trim();
 
-  document.querySelectorAll(".tool-card").forEach(card => {
+      document
+        .querySelectorAll(
+          ".modern-card, .utility-grid button"
+        )
+        .forEach(card => {
 
-    card.style.display =
-      card.textContent.toLowerCase().includes(query)
-        ? ""
-        : "none";
-  });
-
-});
+          card.style.display =
+            card.textContent
+              .toLowerCase()
+              .includes(query)
+              ? ""
+              : "none";
+        });
+    }
+  );
 
 
 /* =========================
