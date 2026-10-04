@@ -1,259 +1,53 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VoidVault — All Tools</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VoidVault</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
+<header>
+  <div class="logo">V</div>
+  <div>
+    <b>VoidVault</b>
+    <small>ALL TOOLS</small>
+  </div>
+</header>
 
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="brand-logo">V</div>
-      <div>
-        <b>VoidVault</b>
-        <small>ALL TOOLS</small>
-      </div>
-    </div>
+<main>
+  <div class="badge">● ONLINE TOOLBOX</div>
 
-    <nav>
-      <button class="nav active" data-filter="all">⌂ <span>Home</span></button>
-      <button class="nav" data-filter="text">T <span>Text Tools</span></button>
-      <button class="nav" data-filter="image">▧ <span>Image Tools</span></button>
-      <button class="nav" data-filter="developer">&lt;/&gt; <span>Developer</span></button>
-      <button class="nav" data-filter="utility">⚙ <span>Utility</span></button>
-    </nav>
+  <h1>Everything you need.<br><span>One vault.</span></h1>
 
-    <div class="side-card">
-      <span>✦</span>
-      <b>Fast. Simple. Secure.</b>
-      <p>Tools berjalan langsung di browser.</p>
-    </div>
+  <p class="intro">Simple tools, fast utilities, all inside VoidVault.</p>
 
-    <div class="online">
-      <i></i> System Online
-      <small>v2.0</small>
-    </div>
-  </aside>
+  <input id="search" class="search" placeholder="Search tools...">
 
-  <main>
+  <h2>Tools</h2>
 
-    <header>
-      <button class="hamburger" id="hamburger">☰</button>
+  <div class="grid">
 
-      <div class="search-box">
-        <span>⌕</span>
-        <input id="search" type="text" placeholder="Search tools...">
-        <kbd>CTRL K</kbd>
-      </div>
+    <button onclick="camera()">📷<b>Live Camera</b><small>Open your camera</small></button>
 
-      <button class="theme" id="theme">☼</button>
-      <div class="avatar">V</div>
-    </header>
+    <button onclick="counter()">📝<b>Word Counter</b><small>Count words</small></button>
 
-    <section class="hero">
-      <div class="hero-glow"></div>
+    <button onclick="textCase()">Aa<b>Text Case</b><small>Change text case</small></button>
 
-      <div class="hero-content">
-        <div class="badge">✦ ALL TOOLS IN ONE PLACE</div>
+    <button onclick="jsonTool()">{}<b>JSON Formatter</b><small>Format JSON</small></button>
 
-        <h1>
-          Your digital
-          <span>toolbox.</span>
-        </h1>
+    <button onclick="password()">🔐<b>Password</b><small>Generate password</small></button>
 
-        <p>
-          Kumpulan tools cepat, praktis, dan aman untuk kebutuhan
-          sehari-hari. Semua berjalan langsung di browser.
-        </p>
+    <button onclick="calculator()">＋<b>Calculator</b><small>Calculate anything</small></button>
 
-        <div class="hero-buttons">
-          <button class="primary" onclick="scrollTools()">
-            🚀 Mulai Sekarang
-          </button>
-          <button class="secondary" onclick="showAbout()">
-            ▶ Lihat Tutorial
-          </button>
-        </div>
-      </div>
+  </div>
+</main>
 
-      <div class="hero-orb">
-        <div class="orb-inner">V</div>
-      </div>
-    </section>
-
-    <section class="stats">
-      <div>
-        <strong id="count">12</strong>
-        <span>Tools</span>
-      </div>
-      <div>
-        <strong>5</strong>
-        <span>Categories</span>
-      </div>
-      <div>
-        <strong>100%</strong>
-        <span>Browser</span>
-      </div>
-      <div>
-        <strong>0</strong>
-        <span>Installations</span>
-      </div>
-    </section>
-
-    <section class="tools-section" id="tools">
-
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">EXPLORE</div>
-          <h2>All Tools</h2>
-          <p>Pilih tool yang ingin kamu gunakan.</p>
-        </div>
-
-        <div class="categories">
-          <button class="category active" data-filter="all">All</button>
-          <button class="category" data-filter="text">Text</button>
-          <button class="category" data-filter="image">Image</button>
-          <button class="category" data-filter="developer">Developer</button>
-          <button class="category" data-filter="utility">Utility</button>
-        </div>
-      </div>
-
-      <div class="grid" id="toolGrid">
-
-        <article class="card" data-type="text" data-name="word counter">
-          <div class="card-icon purple">Aa</div>
-          <div>
-            <h3>Word Counter</h3>
-            <p>Hitung kata dan karakter dengan cepat.</p>
-          </div>
-          <button onclick="openTool('word')">Open →</button>
-        </article>
-
-        <article class="card" data-type="text" data-name="text case converter">
-          <div class="card-icon blue">Tt</div>
-          <div>
-            <h3>Text Case</h3>
-            <p>Ubah teks menjadi uppercase atau lowercase.</p>
-          </div>
-          <button onclick="openTool('case')">Open →</button>
-        </article>
-
-        <article class="card" data-type="text" data-name="remove spaces">
-          <div class="card-icon pink">↔</div>
-          <div>
-            <h3>Remove Spaces</h3>
-            <p>Rapikan spasi berlebih dari sebuah teks.</p>
-          </div>
-          <button onclick="openTool('spaces')">Open →</button>
-        </article>
-
-        <article class="card" data-type="image" data-name="image converter">
-          <div class="card-icon orange">▧</div>
-          <div>
-            <h3>Image Converter</h3>
-            <p>Konversi gambar ke PNG, JPG, atau WEBP.</p>
-          </div>
-          <button onclick="openTool('image')">Open →</button>
-        </article>
-
-        <article class="card" data-type="image" data-name="live camera">
-          <div class="card-icon cyan">◉</div>
-          <div>
-            <h3>Live Camera</h3>
-            <p>Buka kamera langsung dari browser.</p>
-          </div>
-          <button onclick="openTool('camera')">Open →</button>
-        </article>
-
-        <article class="card" data-type="image" data-name="image preview">
-          <div class="card-icon green">◫</div>
-          <div>
-            <h3>Image Preview</h3>
-            <p>Preview gambar sebelum digunakan.</p>
-          </div>
-          <button onclick="openTool('preview')">Open →</button>
-        </article>
-
-        <article class="card" data-type="developer" data-name="json formatter">
-          <div class="card-icon yellow">{ }</div>
-          <div>
-            <h3>JSON Formatter</h3>
-            <p>Format dan rapikan JSON secara instan.</p>
-          </div>
-          <button onclick="openTool('json')">Open →</button>
-        </article>
-
-        <article class="card" data-type="developer" data-name="base64 encoder">
-          <div class="card-icon purple">64</div>
-          <div>
-            <h3>Base64</h3>
-            <p>Encode atau decode teks Base64.</p>
-          </div>
-          <button onclick="openTool('base64')">Open →</button>
-        </article>
-
-        <article class="card" data-type="developer" data-name="url encoder">
-          <div class="card-icon blue">URL</div>
-          <div>
-            <h3>URL Encoder</h3>
-            <p>Encode dan decode URL dengan mudah.</p>
-          </div>
-          <button onclick="openTool('url')">Open →</button>
-        </article>
-
-        <article class="card" data-type="utility" data-name="password generator">
-          <div class="card-icon red">✦</div>
-          <div>
-            <h3>Password Generator</h3>
-            <p>Buat password acak untuk kebutuhanmu.</p>
-          </div>
-          <button onclick="openTool('password')">Open →</button>
-        </article>
-
-        <article class="card" data-type="utility" data-name="qr generator">
-          <div class="card-icon cyan">▦</div>
-          <div>
-            <h3>QR Generator</h3>
-            <p>Buat QR code dari teks atau URL.</p>
-          </div>
-          <button onclick="openTool('qr')">Open →</button>
-        </article>
-
-        <article class="card" data-type="utility" data-name="calculator">
-          <div class="card-icon green">+</div>
-          <div>
-            <h3>Calculator</h3>
-            <p>Kalkulator sederhana langsung di browser.</p>
-          </div>
-          <button onclick="openTool('calculator')">Open →</button>
-        </article>
-
-      </div>
-
-      <div class="empty" id="empty">
-        <span>⌕</span>
-        <h3>Tool tidak ditemukan</h3>
-        <p>Coba kata pencarian lainnya.</p>
-      </div>
-
-    </section>
-
-    <footer>
-      <span>© 2026 VoidVault</span>
-      <span>Built for the web.</span>
-    </footer>
-
-  </main>
-</div>
-
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <button class="close" onclick="closeModal()">×</button>
-    <div id="modalContent"></div>
+<div id="modal">
+  <div id="box">
+    <button onclick="closeTool()">×</button>
+    <div id="content"></div>
   </div>
 </div>
 
