@@ -2,220 +2,243 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VoidVault Tools</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>VoidVault — All Tools</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
+<div class="app">
 
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <div class="logo">V</div>
+      <div class="brand-logo">V</div>
       <div>
-        <strong>VoidVault</strong>
-        <span>ALL TOOLS</span>
+        <b>VoidVault</b>
+        <small>ALL TOOLS</small>
       </div>
     </div>
 
     <nav>
-      <button class="nav-item active" data-category="all">⌂ <span>Dashboard</span></button>
-      <button class="nav-item" data-category="text">✎ <span>Text Tools</span></button>
-      <button class="nav-item" data-category="image">▣ <span>Image Tools</span></button>
-      <button class="nav-item" data-category="developer">⌘ <span>Developer</span></button>
-      <button class="nav-item" data-category="utility">⚙ <span>Utilities</span></button>
+      <button class="nav active" data-filter="all">⌂ <span>Home</span></button>
+      <button class="nav" data-filter="text">T <span>Text Tools</span></button>
+      <button class="nav" data-filter="image">▧ <span>Image Tools</span></button>
+      <button class="nav" data-filter="developer">&lt;/&gt; <span>Developer Tools</span></button>
+      <button class="nav" data-filter="utility">⚙ <span>Utility Tools</span></button>
     </nav>
 
-    <div class="sidebar-bottom">
-      <div class="status-dot"></div>
-      <span>All systems ready</span>
+    <div class="side-box">
+      <div>🚀</div>
+      <b>Fast. Simple. Secure.</b>
+      <p>All tools work directly in your browser.</p>
+    </div>
+
+    <div class="online">
+      <i></i> System Online
+      <small>v1.0.0</small>
     </div>
   </aside>
 
-  <main class="main">
+  <main>
 
-    <header class="topbar">
-      <button class="menu" id="menuBtn">☰</button>
+    <header>
+      <button class="hamburger" id="hamburger">☰</button>
 
       <div class="search">
-        <span>⌕</span>
-        <input id="searchInput" type="text" placeholder="Search tools...">
-        <kbd>CTRL K</kbd>
+        🔎
+        <input id="search" placeholder="Search tools...">
+        <kbd>Ctrl K</kbd>
       </div>
 
-      <button class="theme-btn" id="themeBtn">☼</button>
+      <button class="icon-btn">☼</button>
+      <button class="profile">V</button>
     </header>
 
     <section class="hero">
-      <div class="hero-content">
-        <div class="badge">●  ONLINE TOOLKIT</div>
 
-        <h1>Everything you need.<br><span>In one place.</span></h1>
+      <div class="hero-text">
+        <div class="pill">✦ ALL TOOLS IN ONE PLACE</div>
+
+        <h1>
+          VoidVault
+          <strong>Explore Tools</strong>
+        </h1>
 
         <p>
-          Koleksi tools cepat dan praktis untuk kebutuhan sehari-hari,
-          semuanya langsung berjalan di browser.
+          Kumpulan tools cepat, praktis, dan aman untuk kebutuhan
+          sehari-hari. Semua berjalan langsung di browser,
+          tanpa instalasi.
         </p>
 
         <div class="hero-buttons">
-          <button class="primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">
-            Explore Tools →
+          <button class="primary" onclick="scrollTools()">
+            🚀 Mulai Sekarang →
           </button>
-          <button class="secondary" onclick="openTool('about')">
-            Learn More
+
+          <button class="outline">
+            ▷ Lihat Tutorial
           </button>
         </div>
       </div>
 
-      <div class="hero-orb">
-        <div class="orb-inner">V</div>
+      <div class="hero-logo">
+        <div class="planet">
+          <span>V</span>
+        </div>
       </div>
+
     </section>
 
-    <section class="stats">
-      <div>
-        <strong id="toolCount">8+</strong>
-        <span>Tools</span>
+    <section class="categories">
+
+      <div class="section-title">
+        <small>✦ KATEGORI</small>
+        <h2>Pilih Kategori</h2>
       </div>
 
-      <div>
-        <strong>100%</strong>
-        <span>Browser Based</span>
-      </div>
+      <button class="category active" data-filter="all">▦ Semua</button>
+      <button class="category" data-filter="text">T Text Tools</button>
+      <button class="category" data-filter="image">▧ Image Tools</button>
+      <button class="category" data-filter="developer">&lt;/&gt; Developer Tools</button>
+      <button class="category" data-filter="utility">⚙ Utility Tools</button>
 
-      <div>
-        <strong>0</strong>
-        <span>Server Upload</span>
-      </div>
-
-      <div>
-        <strong>∞</strong>
-        <span>Usage</span>
-      </div>
     </section>
 
-    <section class="tools-section" id="tools">
+    <section class="tools" id="tools">
 
-      <div class="section-head">
+      <div class="tools-heading">
         <div>
-          <span class="eyebrow">TOOLKIT</span>
-          <h2>Explore Tools</h2>
+          <small>✦ KOLEKSI TOOLS</small>
+          <h2>Explore Our Tools</h2>
         </div>
-
-        <span class="result-count" id="resultCount">8 tools</span>
+        <span id="count">8 Tools</span>
       </div>
 
-      <div class="categories">
-        <button class="category active" data-category="all">All</button>
-        <button class="category" data-category="text">Text</button>
-        <button class="category" data-category="image">Image</button>
-        <button class="category" data-category="developer">Developer</button>
-        <button class="category" data-category="utility">Utility</button>
-      </div>
+      <div class="grid" id="grid">
 
-      <div class="tools-grid" id="toolsGrid">
-
-        <article class="tool-card" data-category="text" data-name="text counter">
+        <article class="card" data-type="text" data-name="text counter">
           <div class="tool-icon purple">Aa</div>
-          <div class="tool-info">
-            <h3>Text Counter</h3>
-            <p>Hitung karakter, kata, dan baris teks.</p>
-            <span class="tag">TEXT</span>
+          <div class="card-body">
+            <h3>Text Counter <span>›</span></h3>
+            <p>Hitung karakter, kata, dan baris teks dengan cepat.</p>
+            <label>TEXT</label>
+            <div class="card-bottom">
+              <small>♧ Fast　 🛡 100% Local</small>
+              <button onclick="openTool('counter')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('counter')">Open →</button>
         </article>
 
-        <article class="tool-card" data-category="text" data-name="case converter">
+        <article class="card" data-type="text" data-name="case converter">
           <div class="tool-icon blue">Aa</div>
-          <div class="tool-info">
-            <h3>Case Converter</h3>
-            <p>Ubah teks menjadi UPPERCASE atau lowercase.</p>
-            <span class="tag">TEXT</span>
+          <div class="card-body">
+            <h3>Case Converter <span>›</span></h3>
+            <p>Ubah teks menjadi UPPERCASE, lowercase, atau Title Case.</p>
+            <label>TEXT</label>
+            <div class="card-bottom">
+              <small>♧ Fast　 🛡 100% Local</small>
+              <button onclick="openTool('case')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('case')">Open →</button>
         </article>
 
-        <article class="tool-card" data-category="image" data-name="live camera camera">
-          <div class="tool-icon pink">◉</div>
-          <div class="tool-info">
-            <h3>Live Camera</h3>
+        <article class="card" data-type="image" data-name="live camera">
+          <div class="tool-icon pink">📷</div>
+          <div class="card-body">
+            <h3>Live Camera <span>›</span></h3>
             <p>Buka kamera perangkat langsung di browser.</p>
-            <span class="tag">IMAGE</span>
+            <label>IMAGE</label>
+            <div class="card-bottom">
+              <small>♧ Real-time　 🛡 100% Local</small>
+              <button onclick="openTool('camera')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('camera')">Open →</button>
         </article>
 
-        <article class="tool-card" data-category="image" data-name="image preview">
+        <article class="card" data-type="image" data-name="image preview">
           <div class="tool-icon orange">▧</div>
-          <div class="tool-info">
-            <h3>Image Preview</h3>
-            <p>Preview gambar secara lokal.</p>
-            <span class="tag">IMAGE</span>
+          <div class="card-body">
+            <h3>Image Preview <span>›</span></h3>
+            <p>Preview gambar secara lokal dengan mudah.</p>
+            <label>IMAGE</label>
+            <div class="card-bottom">
+              <small>♧ Fast　 🛡 100% Local</small>
+              <button onclick="openTool('image')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('image')">Open →</button>
         </article>
 
-        <article class="tool-card" data-category="developer" data-name="json formatter">
-          <div class="tool-icon green">{ }</div>
-          <div class="tool-info">
-            <h3>JSON Formatter</h3>
+        <article class="card" data-type="developer" data-name="json formatter">
+          <div class="tool-icon green">&lt;/&gt;</div>
+          <div class="card-body">
+            <h3>JSON Formatter <span>›</span></h3>
             <p>Rapikan dan validasi JSON dengan cepat.</p>
-            <span class="tag">DEV</span>
+            <label>DEVELOPER</label>
+            <div class="card-bottom">
+              <small>♧ Fast　 🛡 100% Local</small>
+              <button onclick="openTool('json')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('json')">Open →</button>
         </article>
 
-        <article class="tool-card" data-category="developer" data-name="base64 encoder">
+        <article class="card" data-type="developer" data-name="base64 encoder">
           <div class="tool-icon cyan">64</div>
-          <div class="tool-info">
-            <h3>Base64 Encoder</h3>
-            <p>Encode dan decode Base64 langsung di browser.</p>
-            <span class="tag">DEV</span>
+          <div class="card-body">
+            <h3>Base64 Encoder <span>›</span></h3>
+            <p>Encode dan decode Base64 dengan mudah.</p>
+            <label>DEVELOPER</label>
+            <div class="card-bottom">
+              <small>♧ Fast　 🛡 100% Local</small>
+              <button onclick="openTool('base64')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('base64')">Open →</button>
         </article>
 
-        <article class="tool-card" data-category="utility" data-name="password generator">
-          <div class="tool-icon yellow">✦</div>
-          <div class="tool-info">
-            <h3>Password Generator</h3>
-            <p>Buat password acak untuk penggunaan aman.</p>
-            <span class="tag">UTILITY</span>
+        <article class="card" data-type="utility" data-name="password generator">
+          <div class="tool-icon yellow">🔑</div>
+          <div class="card-body">
+            <h3>Password Generator <span>›</span></h3>
+            <p>Buat password acak yang kuat dan aman.</p>
+            <label>UTILITY</label>
+            <div class="card-bottom">
+              <small>♧ Secure　 🛡 100% Local</small>
+              <button onclick="openTool('password')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('password')">Open →</button>
         </article>
 
-        <article class="tool-card" data-category="utility" data-name="calculator">
-          <div class="tool-icon violet">＋</div>
-          <div class="tool-info">
-            <h3>Calculator</h3>
-            <p>Kalkulator sederhana langsung di browser.</p>
-            <span class="tag">UTILITY</span>
+        <article class="card" data-type="utility" data-name="calculator">
+          <div class="tool-icon violet">▦</div>
+          <div class="card-body">
+            <h3>Calculator <span>›</span></h3>
+            <p>Kalkulator sederhana untuk perhitungan cepat.</p>
+            <label>UTILITY</label>
+            <div class="card-bottom">
+              <small>♧ Fast　 🛡 100% Local</small>
+              <button onclick="openTool('calculator')">Buka →</button>
+            </div>
           </div>
-          <button onclick="openTool('calculator')">Open →</button>
         </article>
 
       </div>
     </section>
 
     <footer>
-      <span>VOIDVAULT © 2026</span>
-      <span>Built for the web.</span>
+      <b>V VoidVault</b>
+      <span>© 2026 VoidVault. All rights reserved.</span>
+      <span>Privacy　|　Terms　|　Contact</span>
     </footer>
 
   </main>
+</div>
 
-  <!-- TOOL MODAL -->
-  <div class="modal" id="modal">
-    <div class="modal-box">
-
-      <button class="close" onclick="closeTool()">×</button>
-
-      <div id="modalContent"></div>
-
-    </div>
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeTool()">×</button>
+    <div id="modalContent"></div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

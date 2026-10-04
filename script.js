@@ -1,167 +1,168 @@
 const modal = document.getElementById("modal");
-const modalContent = document.getElementById("modalContent");
-const searchInput = document.getElementById("searchInput");
+const content = document.getElementById("modalContent");
+const search = document.getElementById("search");
+const cards = [...document.querySelectorAll(".card")];
 
-const cards = [...document.querySelectorAll(".tool-card")];
-const categories = [...document.querySelectorAll(".category")];
-const navItems = [...document.querySelectorAll(".nav-item")];
+let cameraStream = null;
 
-function filterTools(category = "all") {
-  const search = searchInput.value.toLowerCase().trim();
-
-  let visible = 0;
-
-  cards.forEach(card => {
-    const cardCategory = card.dataset.category;
-    const name = card.dataset.name;
-
-    const categoryMatch =
-      category === "all" || cardCategory === category;
-
-    const searchMatch =
-      !search || name.includes(search);
-
-    if (categoryMatch && searchMatch) {
-      card.style.display = "flex";
-      visible++;
-    } else {
-      card.style.display = "none";
-    }
+function scrollTools(){
+  document.getElementById("tools").scrollIntoView({
+    behavior:"smooth"
   });
-
-  document.getElementById("resultCount").textContent =
-    `${visible} tools`;
 }
 
-categories.forEach(button => {
-  button.addEventListener("click", () => {
+function filterTools(type){
 
-    categories.forEach(x => x.classList.remove("active"));
-    button.classList.add("active");
+  const q = search.value.toLowerCase();
 
-    filterTools(button.dataset.category);
+  let count = 0;
+
+  cards.forEach(card => {
+
+    const matchType =
+      type === "all" || card.dataset.type === type;
+
+    const matchSearch =
+      !q || card.dataset.name.includes(q);
+
+    if(matchType && matchSearch){
+      card.style.display = "flex";
+      count++;
+    }else{
+      card.style.display = "none";
+    }
+
   });
+
+  document.getElementById("count").textContent =
+    count + " Tools";
+}
+
+document.querySelectorAll(".category").forEach(btn => {
+
+  btn.onclick = () => {
+
+    document.querySelectorAll(".category")
+      .forEach(x=>x.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    filterTools(btn.dataset.filter);
+  };
+
 });
 
-navItems.forEach(button => {
-  button.addEventListener("click", () => {
+document.querySelectorAll(".nav").forEach(btn => {
 
-    navItems.forEach(x => x.classList.remove("active"));
-    button.classList.add("active");
+  btn.onclick = () => {
 
-    categories.forEach(x => {
-      x.classList.toggle(
-        "active",
-        x.dataset.category === button.dataset.category
-      );
-    });
+    document.querySelectorAll(".nav")
+      .forEach(x=>x.classList.remove("active"));
 
-    filterTools(button.dataset.category);
-  });
+    btn.classList.add("active");
+
+    const type = btn.dataset.filter;
+
+    document.querySelectorAll(".category")
+      .forEach(x=>{
+        x.classList.toggle(
+          "active",
+          x.dataset.filter === type
+        );
+      });
+
+    filterTools(type);
+  };
+
 });
 
-searchInput.addEventListener("input", () => {
+search.oninput = () => {
+
   const active =
-    document.querySelector(".category.active")?.dataset.category || "all";
+    document.querySelector(".category.active");
 
-  filterTools(active);
-});
+  filterTools(active.dataset.filter);
+};
 
-document.addEventListener("keydown", e => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+document.getElementById("hamburger").onclick = () => {
+  document.getElementById("sidebar")
+    .classList.toggle("open");
+};
+
+document.addEventListener("keydown",e=>{
+
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==="k"){
     e.preventDefault();
-    searchInput.focus();
+    search.focus();
   }
 
-  if (e.key === "Escape") {
-    closeTool();
-  }
+  if(e.key==="Escape") closeTool();
 });
 
-document.getElementById("menuBtn").onclick = () => {
-  document.getElementById("sidebar").classList.toggle("open");
-};
-
-document.getElementById("themeBtn").onclick = () => {
-  document.body.classList.toggle("light");
-};
-
-function openTool(type) {
+function openTool(type){
 
   modal.classList.add("show");
 
-  if (type === "about") {
-    modalContent.innerHTML = `
-      <div class="tool-window">
-        <h2>VoidVault</h2>
-        <p>Browser-based toolkit. Tools berjalan langsung di perangkatmu.</p>
-      </div>
-    `;
-    return;
-  }
+  if(type==="counter"){
 
-  if (type === "counter") {
-    modalContent.innerHTML = `
+    content.innerHTML=`
       <div class="tool-window">
         <h2>Text Counter</h2>
-        <p>Masukkan teks untuk menghitung jumlah karakter dan kata.</p>
+        <p>Hitung karakter dan kata secara realtime.</p>
 
-        <textarea id="counterText" placeholder="Tulis sesuatu..."></textarea>
+        <textarea id="counterText"
+        placeholder="Tulis teks di sini..."></textarea>
 
-        <div class="stats">
-          <div>
-            <strong id="chars">0</strong>
-            <span>Characters</span>
-          </div>
-          <div>
-            <strong id="words">0</strong>
-            <span>Words</span>
-          </div>
+        <div class="actions">
+          <button>Characters: <b id="chars">0</b></button>
+          <button>Words: <b id="words">0</b></button>
         </div>
       </div>
     `;
 
-    document.getElementById("counterText").addEventListener("input", e => {
+    document.getElementById("counterText").oninput=e=>{
 
-      const text = e.target.value;
+      const text=e.target.value;
 
-      document.getElementById("chars").textContent =
+      document.getElementById("chars").textContent=
         text.length;
 
-      document.getElementById("words").textContent =
-        text.trim() ? text.trim().split(/\s+/).length : 0;
-    });
-
-    return;
+      document.getElementById("words").textContent=
+        text.trim()?text.trim().split(/\s+/).length:0;
+    };
   }
 
-  if (type === "case") {
-    modalContent.innerHTML = `
+  if(type==="case"){
+
+    content.innerHTML=`
       <div class="tool-window">
         <h2>Case Converter</h2>
-        <p>Convert text dengan satu klik.</p>
+        <p>Ubah bentuk teks.</p>
 
         <textarea id="caseText"></textarea>
 
-        <div class="tool-actions">
-          <button onclick="convertCase('upper')">UPPERCASE</button>
-          <button onclick="convertCase('lower')">lowercase</button>
-          <button onclick="convertCase('title')">Title Case</button>
+        <div class="actions">
+          <button onclick="caseUpper()">UPPERCASE</button>
+          <button onclick="caseLower()">lowercase</button>
+          <button onclick="caseTitle()">Title Case</button>
         </div>
       </div>
     `;
-    return;
   }
 
-  if (type === "camera") {
-    modalContent.innerHTML = `
+  if(type==="camera"){
+
+    content.innerHTML=`
       <div class="tool-window">
         <h2>Live Camera</h2>
-        <p>Izinkan akses kamera ketika browser memintanya.</p>
+        <p>Izinkan akses kamera jika diminta browser.</p>
 
-        <video id="camera" class="camera" autoplay playsinline></video>
+        <video id="camera"
+          class="camera"
+          autoplay
+          playsinline></video>
 
-        <div class="camera-controls">
+        <div class="camera-buttons">
           <button onclick="startCamera()">Start Camera</button>
           <button onclick="stopCamera()">Stop</button>
         </div>
@@ -169,271 +170,259 @@ function openTool(type) {
     `;
 
     startCamera();
-    return;
   }
 
-  if (type === "image") {
-    modalContent.innerHTML = `
+  if(type==="image"){
+
+    content.innerHTML=`
       <div class="tool-window">
         <h2>Image Preview</h2>
-        <p>Pilih gambar dari perangkatmu.</p>
+        <p>Pilih gambar dari perangkat.</p>
 
-        <input type="file" id="imageFile" accept="image/*">
+        <input type="file"
+          id="imageFile"
+          accept="image/*">
 
-        <img id="imagePreview"
-             style="width:100%;margin-top:15px;border-radius:10px;display:none;">
+        <img id="preview"
+          style="width:100%;margin-top:15px;border-radius:12px;display:none">
       </div>
     `;
 
-    document.getElementById("imageFile").onchange = e => {
+    document.getElementById("imageFile").onchange=e=>{
 
-      const file = e.target.files[0];
+      const file=e.target.files[0];
 
-      if (!file) return;
+      if(!file)return;
 
-      const img = document.getElementById("imagePreview");
+      const img=document.getElementById("preview");
 
-      img.src = URL.createObjectURL(file);
-      img.style.display = "block";
+      img.src=URL.createObjectURL(file);
+      img.style.display="block";
     };
-
-    return;
   }
 
-  if (type === "json") {
-    modalContent.innerHTML = `
+  if(type==="json"){
+
+    content.innerHTML=`
       <div class="tool-window">
         <h2>JSON Formatter</h2>
-        <p>Paste JSON kemudian tekan Format.</p>
+        <p>Format JSON secara otomatis.</p>
 
-        <textarea id="jsonText"
+        <textarea id="jsonInput"
           placeholder='{"hello":"world"}'></textarea>
 
-        <div class="tool-actions">
+        <div class="actions">
           <button onclick="formatJSON()">Format JSON</button>
         </div>
 
-        <pre id="jsonResult"></pre>
+        <pre id="jsonOutput"></pre>
       </div>
     `;
-    return;
   }
 
-  if (type === "base64") {
-    modalContent.innerHTML = `
+  if(type==="base64"){
+
+    content.innerHTML=`
       <div class="tool-window">
         <h2>Base64 Encoder</h2>
 
-        <textarea id="baseText"
-          placeholder="Masukkan teks..."></textarea>
+        <textarea id="baseInput"></textarea>
 
-        <div class="tool-actions">
-          <button onclick="encodeBase64()">Encode</button>
-          <button onclick="decodeBase64()">Decode</button>
+        <div class="actions">
+          <button onclick="encode64()">Encode</button>
+          <button onclick="decode64()">Decode</button>
         </div>
 
-        <textarea id="baseResult"></textarea>
+        <textarea id="baseOutput"></textarea>
       </div>
     `;
-    return;
   }
 
-  if (type === "password") {
-    modalContent.innerHTML = `
+  if(type==="password"){
+
+    content.innerHTML=`
       <div class="tool-window">
         <h2>Password Generator</h2>
-        <p>Generator lokal di browser.</p>
+        <p>Generate password secara lokal.</p>
 
-        <input id="passwordResult" readonly>
+        <input id="passwordOutput" readonly>
 
-        <div class="tool-actions">
+        <div class="actions">
           <button onclick="generatePassword()">Generate</button>
-          <button onclick="copyText('passwordResult')">Copy</button>
+          <button onclick="copyPassword()">Copy</button>
         </div>
       </div>
     `;
 
     generatePassword();
-    return;
   }
 
-  if (type === "calculator") {
-    modalContent.innerHTML = `
+  if(type==="calculator"){
+
+    content.innerHTML=`
       <div class="tool-window">
         <h2>Calculator</h2>
 
-        <input id="calcInput"
+        <input id="calc"
           placeholder="Contoh: 25 * 4 + 10">
 
-        <div class="tool-actions">
+        <div class="actions">
           <button onclick="calculate()">Calculate</button>
         </div>
 
-        <h2 id="calcResult" style="margin-top:20px;">0</h2>
+        <h2 id="answer" style="margin-top:20px">0</h2>
       </div>
     `;
   }
 }
 
-function closeTool() {
+function closeTool(){
 
   stopCamera();
 
   modal.classList.remove("show");
-  modalContent.innerHTML = "";
+  content.innerHTML="";
 }
 
-modal.addEventListener("click", e => {
-  if (e.target === modal) closeTool();
-});
+modal.onclick=e=>{
+  if(e.target===modal)closeTool();
+};
 
-function convertCase(type) {
+function caseUpper(){
+  document.getElementById("caseText").value=
+    document.getElementById("caseText").value.toUpperCase();
+}
 
-  const input = document.getElementById("caseText");
+function caseLower(){
+  document.getElementById("caseText").value=
+    document.getElementById("caseText").value.toLowerCase();
+}
 
-  if (type === "upper")
-    input.value = input.value.toUpperCase();
+function caseTitle(){
 
-  if (type === "lower")
-    input.value = input.value.toLowerCase();
+  const el=document.getElementById("caseText");
 
-  if (type === "title") {
-    input.value = input.value
-      .toLowerCase()
-      .replace(/\b\w/g, c => c.toUpperCase());
+  el.value=el.value
+    .toLowerCase()
+    .replace(/\b\w/g,c=>c.toUpperCase());
+}
+
+function formatJSON(){
+
+  try{
+
+    const obj=JSON.parse(
+      document.getElementById("jsonInput").value
+    );
+
+    document.getElementById("jsonOutput").textContent=
+      JSON.stringify(obj,null,2);
+
+  }catch{
+
+    document.getElementById("jsonOutput").textContent=
+      "JSON tidak valid.";
   }
 }
 
-function formatJSON() {
+function encode64(){
 
-  const input = document.getElementById("jsonText");
-  const result = document.getElementById("jsonResult");
+  const text=document.getElementById("baseInput").value;
 
-  try {
-
-    const parsed = JSON.parse(input.value);
-
-    result.textContent =
-      JSON.stringify(parsed, null, 2);
-
-  } catch {
-    result.textContent = "JSON tidak valid.";
-  }
-}
-
-function encodeBase64() {
-
-  const text = document.getElementById("baseText").value;
-
-  document.getElementById("baseResult").value =
+  document.getElementById("baseOutput").value=
     btoa(unescape(encodeURIComponent(text)));
 }
 
-function decodeBase64() {
+function decode64(){
 
-  try {
+  try{
 
-    const text =
-      document.getElementById("baseText").value;
+    const text=document.getElementById("baseInput").value;
 
-    document.getElementById("baseResult").value =
-      decodeURIComponent(
-        escape(atob(text))
-      );
+    document.getElementById("baseOutput").value=
+      decodeURIComponent(escape(atob(text)));
 
-  } catch {
+  }catch{
 
-    document.getElementById("baseResult").value =
+    document.getElementById("baseOutput").value=
       "Base64 tidak valid.";
   }
 }
 
-function generatePassword() {
+function generatePassword(){
 
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+  const chars=
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
 
-  let result = "";
+  let result="";
 
-  for (let i = 0; i < 18; i++) {
-    result += chars[Math.floor(Math.random() * chars.length)];
+  for(let i=0;i<18;i++){
+    result+=chars[Math.floor(Math.random()*chars.length)];
   }
 
-  document.getElementById("passwordResult").value = result;
+  document.getElementById("passwordOutput").value=result;
 }
 
-function copyText(id) {
+function copyPassword(){
 
-  const input = document.getElementById(id);
-
-  navigator.clipboard.writeText(input.value);
+  navigator.clipboard.writeText(
+    document.getElementById("passwordOutput").value
+  );
 }
 
-function calculate() {
+function calculate(){
 
-  const input =
-    document.getElementById("calcInput").value;
+  const input=document.getElementById("calc").value;
 
-  const result =
-    document.getElementById("calcResult");
+  if(!/^[0-9+\-*/().%\s]+$/.test(input)){
+    document.getElementById("answer").textContent="Invalid";
+    return;
+  }
 
-  try {
-
-    // Kalkulator sederhana, hanya karakter matematika.
-    if (!/^[0-9+\-*/().%\s]+$/.test(input)) {
-      throw new Error();
-    }
-
-    result.textContent = Function(
-      `"use strict"; return (${input})`
-    )();
-
-  } catch {
-
-    result.textContent = "Input tidak valid.";
+  try{
+    document.getElementById("answer").textContent=
+      Function('"use strict";return ('+input+')')();
+  }catch{
+    document.getElementById("answer").textContent="Invalid";
   }
 }
 
-let cameraStream = null;
+async function startCamera(){
 
-async function startCamera() {
+  try{
 
-  try {
+    if(cameraStream)stopCamera();
 
-    if (cameraStream) stopCamera();
-
-    cameraStream =
+    cameraStream=
       await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "environment"
+        video:{
+          facingMode:"environment"
         },
-        audio: false
+        audio:false
       });
 
-    const video =
-      document.getElementById("camera");
+    const video=document.getElementById("camera");
 
-    if (video) {
-      video.srcObject = cameraStream;
+    if(video){
+      video.srcObject=cameraStream;
     }
 
-  } catch (error) {
+  }catch{
 
     alert(
-      "Kamera tidak bisa dibuka. Pastikan izin kamera diberikan dan situs menggunakan HTTPS."
+      "Kamera tidak dapat dibuka. Izinkan kamera dan pastikan website menggunakan HTTPS."
     );
   }
 }
 
-function stopCamera() {
+function stopCamera(){
 
-  if (cameraStream) {
+  if(cameraStream){
 
-    cameraStream
-      .getTracks()
-      .forEach(track => track.stop());
+    cameraStream.getTracks()
+      .forEach(track=>track.stop());
 
-    cameraStream = null;
+    cameraStream=null;
   }
 }
 
