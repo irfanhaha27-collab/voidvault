@@ -3,89 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VoidVault // Live Camera</title>
+  <title>VoidVault Tools</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <main class="camera-app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">V</div>
+      <div>
+        <strong>VoidVault</strong>
+        <span>ALL TOOLS</span>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-category="all">⌂ <span>Dashboard</span></button>
+      <button class="nav-item" data-category="text">✎ <span>Text Tools</span></button>
+      <button class="nav-item" data-category="image">▣ <span>Image Tools</span></button>
+      <button class="nav-item" data-category="developer">⌘ <span>Developer</span></button>
+      <button class="nav-item" data-category="utility">⚙ <span>Utilities</span></button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="status-dot"></div>
+      <span>All systems ready</span>
+    </div>
+  </aside>
+
+  <main class="main">
 
     <header class="topbar">
-      <div>
-        <span class="eyebrow">VOIDVAULT // CAMERA</span>
-        <h1>Live Camera</h1>
-        <p>Private camera workspace</p>
+      <button class="menu" id="menuBtn">☰</button>
+
+      <div class="search">
+        <span>⌕</span>
+        <input id="searchInput" type="text" placeholder="Search tools...">
+        <kbd>CTRL K</kbd>
       </div>
+
+      <button class="theme-btn" id="themeBtn">☼</button>
     </header>
 
-    <section class="camera-card">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="badge">●  ONLINE TOOLKIT</div>
 
-      <div class="camera-frame">
-        <video id="camera" autoplay playsinline muted></video>
+        <h1>Everything you need.<br><span>In one place.</span></h1>
 
-        <div id="cameraPlaceholder" class="placeholder">
-          <div class="camera-icon">◉</div>
-          <h2>Camera Ready</h2>
-          <p>Tekan tombol Start Camera untuk memulai.</p>
-        </div>
+        <p>
+          Koleksi tools cepat dan praktis untuk kebutuhan sehari-hari,
+          semuanya langsung berjalan di browser.
+        </p>
 
-        <div class="camera-status">
-          <span id="statusDot"></span>
-          <span id="statusText">OFFLINE</span>
+        <div class="hero-buttons">
+          <button class="primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">
+            Explore Tools →
+          </button>
+          <button class="secondary" onclick="openTool('about')">
+            Learn More
+          </button>
         </div>
       </div>
 
-      <div class="controls">
-
-        <button id="startButton" class="primary">
-          Start Camera
-        </button>
-
-        <button id="captureButton" disabled>
-          Capture
-        </button>
-
-        <button id="switchButton" disabled>
-          Switch Camera
-        </button>
-
-        <button id="stopButton" disabled>
-          Stop
-        </button>
-
+      <div class="hero-orb">
+        <div class="orb-inner">V</div>
       </div>
-
     </section>
 
-    <section id="previewSection" class="preview-card hidden">
-
-      <div class="section-title">
-        <span class="eyebrow">CAPTURED IMAGE</span>
-        <h2>Preview</h2>
+    <section class="stats">
+      <div>
+        <strong id="toolCount">8+</strong>
+        <span>Tools</span>
       </div>
 
-      <canvas id="canvas"></canvas>
-
-      <div class="preview-buttons">
-
-        <button id="retakeButton">
-          Retake
-        </button>
-
-        <a id="downloadButton" class="primary download-button">
-          Save Photo
-        </a>
-
+      <div>
+        <strong>100%</strong>
+        <span>Browser Based</span>
       </div>
 
+      <div>
+        <strong>0</strong>
+        <span>Server Upload</span>
+      </div>
+
+      <div>
+        <strong>∞</strong>
+        <span>Usage</span>
+      </div>
     </section>
 
-    <p id="message"></p>
+    <section class="tools-section" id="tools">
+
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">TOOLKIT</span>
+          <h2>Explore Tools</h2>
+        </div>
+
+        <span class="result-count" id="resultCount">8 tools</span>
+      </div>
+
+      <div class="categories">
+        <button class="category active" data-category="all">All</button>
+        <button class="category" data-category="text">Text</button>
+        <button class="category" data-category="image">Image</button>
+        <button class="category" data-category="developer">Developer</button>
+        <button class="category" data-category="utility">Utility</button>
+      </div>
+
+      <div class="tools-grid" id="toolsGrid">
+
+        <article class="tool-card" data-category="text" data-name="text counter">
+          <div class="tool-icon purple">Aa</div>
+          <div class="tool-info">
+            <h3>Text Counter</h3>
+            <p>Hitung karakter, kata, dan baris teks.</p>
+            <span class="tag">TEXT</span>
+          </div>
+          <button onclick="openTool('counter')">Open →</button>
+        </article>
+
+        <article class="tool-card" data-category="text" data-name="case converter">
+          <div class="tool-icon blue">Aa</div>
+          <div class="tool-info">
+            <h3>Case Converter</h3>
+            <p>Ubah teks menjadi UPPERCASE atau lowercase.</p>
+            <span class="tag">TEXT</span>
+          </div>
+          <button onclick="openTool('case')">Open →</button>
+        </article>
+
+        <article class="tool-card" data-category="image" data-name="live camera camera">
+          <div class="tool-icon pink">◉</div>
+          <div class="tool-info">
+            <h3>Live Camera</h3>
+            <p>Buka kamera perangkat langsung di browser.</p>
+            <span class="tag">IMAGE</span>
+          </div>
+          <button onclick="openTool('camera')">Open →</button>
+        </article>
+
+        <article class="tool-card" data-category="image" data-name="image preview">
+          <div class="tool-icon orange">▧</div>
+          <div class="tool-info">
+            <h3>Image Preview</h3>
+            <p>Preview gambar secara lokal.</p>
+            <span class="tag">IMAGE</span>
+          </div>
+          <button onclick="openTool('image')">Open →</button>
+        </article>
+
+        <article class="tool-card" data-category="developer" data-name="json formatter">
+          <div class="tool-icon green">{ }</div>
+          <div class="tool-info">
+            <h3>JSON Formatter</h3>
+            <p>Rapikan dan validasi JSON dengan cepat.</p>
+            <span class="tag">DEV</span>
+          </div>
+          <button onclick="openTool('json')">Open →</button>
+        </article>
+
+        <article class="tool-card" data-category="developer" data-name="base64 encoder">
+          <div class="tool-icon cyan">64</div>
+          <div class="tool-info">
+            <h3>Base64 Encoder</h3>
+            <p>Encode dan decode Base64 langsung di browser.</p>
+            <span class="tag">DEV</span>
+          </div>
+          <button onclick="openTool('base64')">Open →</button>
+        </article>
+
+        <article class="tool-card" data-category="utility" data-name="password generator">
+          <div class="tool-icon yellow">✦</div>
+          <div class="tool-info">
+            <h3>Password Generator</h3>
+            <p>Buat password acak untuk penggunaan aman.</p>
+            <span class="tag">UTILITY</span>
+          </div>
+          <button onclick="openTool('password')">Open →</button>
+        </article>
+
+        <article class="tool-card" data-category="utility" data-name="calculator">
+          <div class="tool-icon violet">＋</div>
+          <div class="tool-info">
+            <h3>Calculator</h3>
+            <p>Kalkulator sederhana langsung di browser.</p>
+            <span class="tag">UTILITY</span>
+          </div>
+          <button onclick="openTool('calculator')">Open →</button>
+        </article>
+
+      </div>
+    </section>
+
+    <footer>
+      <span>VOIDVAULT © 2026</span>
+      <span>Built for the web.</span>
+    </footer>
 
   </main>
 
-  <script src="script.js"></script>
+  <!-- TOOL MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-box">
 
+      <button class="close" onclick="closeTool()">×</button>
+
+      <div id="modalContent"></div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
